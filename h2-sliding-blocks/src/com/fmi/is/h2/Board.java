@@ -14,7 +14,7 @@ public class Board {
     }
 
     public Board(Board anotherBoard) {
-        this.board = anotherBoard.board;
+        this.board = copy(anotherBoard.board);
         this.boardDim = anotherBoard.boardDim;
         this.emptyX = anotherBoard.emptyX;
         this.emptyY = anotherBoard.emptyY;
