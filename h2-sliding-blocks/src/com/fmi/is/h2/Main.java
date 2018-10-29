@@ -30,48 +30,50 @@ public class Main {
         }
         visited.add(board);
 
-        if (board.getDistance(starting.getRow(), starting.getCol()) == 0) {
+        if (board.getDistanceSum() == 0) {
             return true;
         }
 
         TreeMap<Integer, Action> map = new TreeMap<>();
-        map.put(board.getDistance(starting.getRow() - 1, starting.getCol()), Action.UP);
-        map.put(board.getDistance(starting.getRow() + 1, starting.getCol()), Action.DOWN);
-        map.put(board.getDistance(starting.getRow(), starting.getCol() + 1), Action.LEFT);
-        map.put(board.getDistance(starting.getRow(), starting.getCol() - 1), Action.RIGHT);
+        Board upBoard = new Board(board);
+        upBoard.moveUp();
+        map.put(upBoard.getDistanceSum(), Action.UP);
+        Board downBoard= new Board(board);
+        downBoard.moveDown();
+        map.put(downBoard.getDistanceSum(), Action.DOWN);
+        Board leftBoard= new Board(board);
+        leftBoard.moveLeft();
+        map.put(leftBoard.getDistanceSum(), Action.LEFT);
+        Board rightBoard= new Board(board);
+        rightBoard.moveRight();
+        map.put(rightBoard.getDistanceSum(), Action.RIGHT);
 
         List<Map.Entry<Integer, Action>> list = new ArrayList<>(map.entrySet());
-        Collections.reverse(list);
-        Board newBoard = null;
         for (Map.Entry<Integer, Action> entry : list) {
             if (entry.getKey() == -1) {
                 return false;
             }
             switch (entry.getValue()) {
                 case UP:
-                    newBoard = new Board(board);
-                    if (search(new Point(starting.getRow() - 1, starting.getCol()), newBoard.moveUp())) {
+                    if (search(new Point(starting.getRow() - 1, starting.getCol()), upBoard)) {
                         path.push("up");
                         return true;
                     }
                     break;
                 case DOWN:
-                    newBoard = new Board(board);
-                    if (search(new Point(starting.getRow() + 1, starting.getCol()), newBoard.moveDown())) {
+                    if (search(new Point(starting.getRow() + 1, starting.getCol()), downBoard)) {
                         path.push("down");
                         return true;
                     }
                     break;
                 case LEFT:
-                    newBoard = new Board(board);
-                    if (search(new Point(starting.getRow(), starting.getCol() + 1), newBoard.moveLeft())) {
+                    if (search(new Point(starting.getRow(), starting.getCol() + 1), leftBoard)) {
                         path.push("left");
                         return true;
                     }
                     break;
                 case RIGHT:
-                    newBoard = new Board(board);
-                    if (search(new Point(starting.getRow(), starting.getCol() - 1), newBoard.moveRight())) {
+                    if (search(new Point(starting.getRow(), starting.getCol() - 1), rightBoard)) {
                         path.push("right");
                         return true;
                     }

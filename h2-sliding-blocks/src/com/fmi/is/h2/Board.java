@@ -136,11 +136,14 @@ public class Board {
         return emptyPoint;
     }
 
-    public int getDistance(int row, int col) {
-        if (row < 0 || row >= boardDim || col < 0 || col >= boardDim){
-            return -1;
+    public int getDistanceSum() {
+        int sum = 0;
+        for (int i = 0; i < boardDim; i++) {
+            for (int j = 0; j < boardDim; j++) {
+                sum += this.distance[i][j];
+            }
         }
-        return this.distance[row][col];
+        return sum;
     }
 
     @Override
