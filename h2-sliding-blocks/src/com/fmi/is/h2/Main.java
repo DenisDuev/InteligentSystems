@@ -68,13 +68,13 @@ public class Main {
                     break;
                 case LEFT:
                     if (search(new Point(starting.getRow(), starting.getCol() + 1), leftBoard, distance + 1)) {
-                        path.push("left");
+                        path.push("right");
                         return true;
                     }
                     break;
                 case RIGHT:
                     if (search(new Point(starting.getRow(), starting.getCol() - 1), rightBoard, distance + 1)) {
-                        path.push("right");
+                        path.push("left");
                         return true;
                     }
                     break;
