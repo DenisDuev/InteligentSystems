@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 public class Main {
     public static void main(String[] args) throws IOException {
         int numberOfQueens = readNumberOfQueens();
+        Board board = new Board(numberOfQueens);
+        System.out.println(board);
     }
 
     private static int readNumberOfQueens() throws IOException {
