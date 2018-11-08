@@ -1,11 +1,10 @@
 package com.fmi.is.h3;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Board {
     private int[][] board;
+    private List<Point> queens = new ArrayList<>();
     private int dimensionSize;
 
     public Board(int dimensionSize) {
@@ -15,23 +14,29 @@ public class Board {
     }
 
     private void placeInitialQueens() {
+        HashSet<Integer> placedRows = new HashSet<>();
         for (int col = 0; col < dimensionSize; col++) {
-            List<Point> possiblePoints = new ArrayList<>(0);
+            List<Point> possiblePoints = new ArrayList<>(1);
             int minConflicts = Integer.MAX_VALUE;
             for (int row = 0; row < dimensionSize; row++) {
+                if (placedRows.contains(row)) {
+                    continue;
+                }
                 if (minConflicts > this.board[row][col] && minConflicts != -1) {
                     minConflicts = this.board[row][col];
                     possiblePoints = new ArrayList<>();
                 }
 
-                if (minConflicts == this.board[row][col]){
+                if (minConflicts == this.board[row][col]) {
                     possiblePoints.add(new Point(row, col));
                 }
             }
 
-            int randIndexForQueenPoint = (int) (Math.random()*possiblePoints.size());
+            int randIndexForQueenPoint = (int) (Math.random() * possiblePoints.size());
             Point point = possiblePoints.get(randIndexForQueenPoint);
             this.board[point.row][point.col] = -1;
+            queens.add(point);
+            placedRows.add(point.row);
             precalculateConflicts(point.row, point.col);
         }
     }
@@ -48,12 +53,18 @@ public class Board {
         }
 
         //add to up-down diagonal
-        for (int tRow = 0, tCol = Math.abs(col - row); tCol < dimensionSize && tRow < dimensionSize; tRow++, tCol++) {
+        for (int tRow = 0, tCol = col - row; tCol < dimensionSize && tRow < dimensionSize; tRow++, tCol++) {
+            if (tCol < 0) {
+                continue;
+            }
             increaseValueIfNotQueen(tRow, tCol);
         }
 
         //add to down-up diagonal
-        for (int tRow = Math.min(row + col, row), tCol = 0; tRow > 0 && tCol < dimensionSize; tRow--, tCol++) {
+        for (int tRow = row + col, tCol = 0; tRow >= 0 && tCol < dimensionSize; tRow--, tCol++) {
+            if (tRow >= dimensionSize) {
+                continue;
+            }
             increaseValueIfNotQueen(tRow, tCol);
         }
     }
@@ -74,6 +85,58 @@ public class Board {
         }
     }
 
+    public int isValid() {
+        int countOfConflicts = 0;
+        for (int col = 0; col < dimensionSize; col++) {
+            final int a = col;
+            int row = queens.stream().filter(e -> e.col == a).findFirst().get().row;
+
+            countOfConflicts += conflictsForQueen(row, col);
+        }
+        return countOfConflicts;
+    }
+
+    private int conflictsForQueen(int row, int col) {
+        int countOfConflicts = -4;
+        for (int i = 0; i < dimensionSize; i++) {
+            if (this.board[row][i] == -1) {
+                countOfConflicts++;
+                break;
+            }
+        }
+
+        //add to col
+        for (int i = 0; i < dimensionSize; i++) {
+            if (this.board[i][col] == -1) {
+                countOfConflicts++;
+                break;
+            }
+        }
+
+        //add to up-down diagonal
+        for (int tRow = 0, tCol = col - row; tCol < dimensionSize && tRow < dimensionSize; tRow++, tCol++) {
+            if (tCol < 0) {
+                continue;
+            }
+            if (this.board[tRow][tCol] == -1) {
+                countOfConflicts++;
+                break;
+            }
+        }
+
+        //add to down-up diagonal
+        for (int tRow = row + col, tCol = 0; tRow >= 0 && tCol < dimensionSize; tRow--, tCol++) {
+            if (tRow >= dimensionSize) {
+                continue;
+            }
+            if (this.board[tRow][tCol] == -1) {
+                countOfConflicts++;
+                break;
+            }
+        }
+        return countOfConflicts;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -82,5 +145,73 @@ public class Board {
         }
 
         return sb.toString();
+    }
+
+    public void moveToSolve() {
+        for (int i = 0; i < queens.size(); i++) {
+            Point queen = queens.get(i);
+            queen.conflicts = conflictsForQueen(queen.row, queen.col);
+        }
+
+        //find worst queens
+        queens.sort(Comparator.comparingInt(e -> -e.conflicts));
+        List<Point> possible = new ArrayList<>();
+        int maxConflict = queens.get(0).conflicts;
+        for (Point queen : queens) {
+            if (maxConflict != queen.conflicts) {
+                break;
+            }
+            possible.add(queen);
+        }
+
+        //get one random queen
+        int randomIndex = (int) (Math.random() * possible.size());
+        Point changeQueen = possible.get(randomIndex);
+
+        //get best row
+        List<Point> bestPoints = new ArrayList<>();
+        Point bestPoint = new Point(changeQueen.row, changeQueen.col, Integer.MAX_VALUE);
+        for (int row = 0; row < dimensionSize; row++) {
+            if (bestPoint.conflicts > this.board[row][changeQueen.col] && this.board[row][changeQueen.col] != -1) {
+                bestPoint = new Point(row, changeQueen.col, this.board[row][changeQueen.col]);
+                bestPoints = new ArrayList<>();
+            }
+
+            if (bestPoint.conflicts == this.board[row][changeQueen.col]) {
+                bestPoints.add(bestPoint);
+            }
+        }
+
+        int randPlaceIndex = (int) (Math.random() * bestPoints.size());
+        Point bestChangePoint = bestPoints.get(randPlaceIndex);
+
+        //check if it is better point
+//        if (changeQueen.conflicts < bestChangePoint.conflicts){
+//            System.out.println("skip");
+//            return;
+//        }
+
+        //second queen for swap
+        //Point queenOnChangedRow = queens.stream().filter(e -> e.row == bestChangePoint.row).findFirst().get();
+        //swap queen on same row
+        // secondQueenNextSpot = new Point(changeQueen.row, queenOnChangedRow.col);
+
+       //make queen a point
+        this.board[changeQueen.row][changeQueen.col] = changeQueen.conflicts + 1;
+
+        //move queen
+        this.board[bestChangePoint.row][bestChangePoint.col] = -1;
+        changeQueen.row = bestChangePoint.row;
+        changeQueen.col = bestChangePoint.col;
+        changeQueen.conflicts = conflictsForQueen(changeQueen.row, changeQueen.col);
+
+        //make second queen a point
+//        this.board[queenOnChangedRow.row][queenOnChangedRow.col] = conflictsForQueen(queenOnChangedRow.row, queenOnChangedRow.col) + 1;
+//
+//        //move queen to spot
+//        this.board[secondQueenNextSpot.row][secondQueenNextSpot.col] = -1;
+//        queenOnChangedRow.row = secondQueenNextSpot.row;
+//        queenOnChangedRow.col = secondQueenNextSpot.col;
+//        queenOnChangedRow.conflicts = conflictsForQueen(queenOnChangedRow.row, queenOnChangedRow.col);
     }
 }

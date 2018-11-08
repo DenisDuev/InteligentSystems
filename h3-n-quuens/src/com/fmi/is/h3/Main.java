@@ -9,6 +9,20 @@ public class Main {
         int numberOfQueens = readNumberOfQueens();
         Board board = new Board(numberOfQueens);
         System.out.println(board);
+        for (int i = 0; i < 50000; i++) {
+
+            int conflicts = board.isValid();
+            if (conflicts == 0) {
+
+                System.out.println("solved");
+                System.out.println(board);
+                return;
+            }
+            board.moveToSolve();
+            System.out.println("Number of conflicts: " + conflicts);
+            System.out.println(board);
+        }
+        System.out.println("cannot be solved");
     }
 
     private static int readNumberOfQueens() throws IOException {
