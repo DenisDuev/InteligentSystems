@@ -147,6 +147,18 @@ public class Board {
         return sb.toString();
     }
 
+    public String toStringPrettyPrint() {
+        StringBuilder sb = new StringBuilder();
+        for (int row = 0; row < dimensionSize; row++) {
+            for (int col = 0; col < dimensionSize; col++) {
+                sb.append(this.board[row][col] == -1 ? "*" : "_").append(" ");
+            }
+            sb.append(System.lineSeparator());
+        }
+
+        return sb.toString();
+    }
+
     public void moveToSolve() {
         for (int i = 0; i < queens.size(); i++) {
             Point queen = queens.get(i);
@@ -185,17 +197,6 @@ public class Board {
         int randPlaceIndex = (int) (Math.random() * bestPoints.size());
         Point bestChangePoint = bestPoints.get(randPlaceIndex);
 
-        //check if it is better point
-//        if (changeQueen.conflicts < bestChangePoint.conflicts){
-//            System.out.println("skip");
-//            return;
-//        }
-
-        //second queen for swap
-        //Point queenOnChangedRow = queens.stream().filter(e -> e.row == bestChangePoint.row).findFirst().get();
-        //swap queen on same row
-        // secondQueenNextSpot = new Point(changeQueen.row, queenOnChangedRow.col);
-
        //make queen a point
         this.board[changeQueen.row][changeQueen.col] = changeQueen.conflicts + 1;
 
@@ -204,14 +205,5 @@ public class Board {
         changeQueen.row = bestChangePoint.row;
         changeQueen.col = bestChangePoint.col;
         changeQueen.conflicts = conflictsForQueen(changeQueen.row, changeQueen.col);
-
-        //make second queen a point
-//        this.board[queenOnChangedRow.row][queenOnChangedRow.col] = conflictsForQueen(queenOnChangedRow.row, queenOnChangedRow.col) + 1;
-//
-//        //move queen to spot
-//        this.board[secondQueenNextSpot.row][secondQueenNextSpot.col] = -1;
-//        queenOnChangedRow.row = secondQueenNextSpot.row;
-//        queenOnChangedRow.col = secondQueenNextSpot.col;
-//        queenOnChangedRow.conflicts = conflictsForQueen(queenOnChangedRow.row, queenOnChangedRow.col);
     }
 }
