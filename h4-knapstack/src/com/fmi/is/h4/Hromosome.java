@@ -31,17 +31,6 @@ public class Hromosome {
 
   @Override
   public String toString() {
-    return "Hromosome{"
-        + "items="
-        + Arrays.toString(items)
-        + ", weight="
-        + weight
-        + ", price="
-        + price
-        + ", allWeights="
-        + Arrays.toString(allWeights)
-        + ", allPrices="
-        + Arrays.toString(allPrices)
-        + '}';
+    return "Hromosome{" + "weight=" + weight + ", price=" + price + ", items=" + Arrays.toString(items) + '}';
   }
 }
