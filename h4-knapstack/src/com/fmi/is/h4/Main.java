@@ -13,12 +13,11 @@ public class Main {
   private static int[] price;
 
   private static List<Chromosome> population = new ArrayList<>();
-  private static final int SIZE_OF_POPULATION = 200;
+  private static int SIZE_OF_POPULATION;
   private static int NUMBER_OF_GENERATIONS;
   private static final int NUMBER_OF_MUTATIONS = 50;
   private static final int NUMBER_OF_CROSSOVERS = 30;
   private static final int NUMBER_OF_BEST_CROSSOVERS = 20;
-  private static int MAX_ITERATION_WITHOUT_CHANGE;
   private static int maxKilos;
   private static int numberOfEntries;
   private static Random rand = new Random();
@@ -29,13 +28,14 @@ public class Main {
     maxKilos = Integer.parseInt(inputData[0]);
     numberOfEntries = Integer.parseInt(inputData[1]);
     NUMBER_OF_GENERATIONS = numberOfEntries * 40;
-    MAX_ITERATION_WITHOUT_CHANGE = NUMBER_OF_GENERATIONS / 10;
+    SIZE_OF_POPULATION = numberOfEntries;
+    int maxIterationWithoutChange = NUMBER_OF_GENERATIONS / 10;
     fillInitialItems(reader);
     createInitialPopulation(numberOfEntries);
 
     int maxPrice = 0;
     int withoutChangeCount = 0;
-    for (int i = 0; i < NUMBER_OF_GENERATIONS && withoutChangeCount < MAX_ITERATION_WITHOUT_CHANGE; i++) {
+    for (int i = 0; i < NUMBER_OF_GENERATIONS && withoutChangeCount < maxIterationWithoutChange; i++) {
       crossover();
       mutate();
       fitness();
