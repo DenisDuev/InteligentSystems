@@ -11,27 +11,34 @@ public class Main {
   private static int[] weight;
   private static int[] price;
 
-  private static List<Hromosome> population = new ArrayList<>();
+  private static List<Chromosome> population = new ArrayList<>();
   private static final int SIZE_OF_POPULATION = 50;
-  private static final int NUMBER_OF_GENERATIONS = 1;
+  private static final int NUMBER_OF_GENERATIONS = 500;
+  private static final int NUMBER_OF_MUTATIONS = 20;
+  private static final int NUMBER_OF_CROSSOVERS = 10;
+  private static final int NUMBER_OF_BEST_CROSSOVERS = 10;
   private static int maxKilos;
+  private static int numberOfEntries;
   private static Random rand = new Random();
 
   public static void main(String[] args) throws IOException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     String[] inputData = reader.readLine().split(" ");
     maxKilos = Integer.parseInt(inputData[0]);
-    int numberOfEntries = Integer.parseInt(inputData[1]);
-    fillInitialItems(reader, numberOfEntries);
+    numberOfEntries = Integer.parseInt(inputData[1]);
+    fillInitialItems(reader);
     createInitialPopulation(numberOfEntries);
 
     for (int i = 0; i < NUMBER_OF_GENERATIONS; i++) {
-      population.sort(Comparator.comparingInt(Hromosome::getPrice).reversed());
+      crossover();
+      mutate();
+      fitness();
+      Chromosome max = Collections.max(population, Comparator.comparingInt(Chromosome::getPrice));
+      System.out.println("size " + population.size()+ " " + max);
     }
-    System.out.println("Solution: " + population.get(0));
   }
 
-  private static void fillInitialItems(BufferedReader reader, int numberOfEntries)
+  private static void fillInitialItems(BufferedReader reader)
       throws IOException {
     weight = new int[numberOfEntries];
     price = new int[numberOfEntries];
@@ -49,7 +56,7 @@ public class Main {
   private static void createInitialPopulation(int numberOfEntries) {
     for (int i = 0; i < Main.SIZE_OF_POPULATION; i++) {
 
-      Hromosome hromosome = new Hromosome(numberOfEntries, weight, price);
+      Chromosome chromosome = new Chromosome(numberOfEntries, weight, price);
       List<Integer> range =
           IntStream.rangeClosed(0, numberOfEntries - 1).boxed().collect(Collectors.toList());
 
@@ -57,12 +64,53 @@ public class Main {
         int randomRangeIndex = rand.nextInt(range.size());
         int randomIndex = range.get(randomRangeIndex);
         range.remove(randomRangeIndex);
-        if (hromosome.getWeight() + weight[randomIndex] > maxKilos){
+        if (chromosome.getWeight() + weight[randomIndex] > maxKilos){
           continue;
         }
-        hromosome.addItem(randomIndex);
+        chromosome.addItem(randomIndex);
       }
-      population.add(hromosome);
+      population.add(chromosome);
     }
+  }
+
+  private static void crossover() {
+    population.sort(Comparator.comparingInt(Chromosome::getPrice));
+    List<Chromosome> children = new ArrayList<>(NUMBER_OF_CROSSOVERS);
+    for (int i = 0; i < NUMBER_OF_CROSSOVERS; i++) {
+      int indexOfGoodChromosome = rand.nextInt(population.size()) % NUMBER_OF_BEST_CROSSOVERS;
+      int randomIndex = rand.nextInt(population.size());
+      if (indexOfGoodChromosome == randomIndex) {
+        continue;
+      }
+      Chromosome goodChromosome = population.get(indexOfGoodChromosome);
+      Chromosome otherChromosome = population.get(randomIndex);
+      children.add(Chromosome.onePointCrossover(goodChromosome, otherChromosome));
+    }
+    population.addAll(children);
+  }
+
+  private static void fitness(){
+    population.sort(Comparator.comparingInt(Chromosome::getPrice).reversed());
+    List<Chromosome> newList = new ArrayList<>(NUMBER_OF_GENERATIONS);
+    for (int i = 0, fittest = 0; fittest < SIZE_OF_POPULATION; i++) {
+      if (population.get(i).getWeight() <= maxKilos){
+        newList.add(population.get(i));
+        fittest++;
+      }
+    }
+    population = newList;
+  }
+
+  private static void mutate() {
+    population.sort(Comparator.comparingInt(Chromosome::getWeight).reversed());
+    List<Chromosome> mutatedChromosomes = new ArrayList<>(NUMBER_OF_MUTATIONS);
+    for (int i = 0; i < NUMBER_OF_MUTATIONS; i++) {
+      int randomIndexChromosome = rand.nextInt(population.size());
+      int randomIndexItem = rand.nextInt(numberOfEntries);
+      Chromosome mutationChromosome = new Chromosome(population.get(randomIndexChromosome));
+      mutationChromosome.mutateItem(randomIndexItem);
+      mutatedChromosomes.add(mutationChromosome);
+    }
+    population.addAll(mutatedChromosomes);
   }
 }
