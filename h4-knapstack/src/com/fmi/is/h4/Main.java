@@ -13,11 +13,11 @@ public class Main {
   private static int[] price;
 
   private static List<Chromosome> population = new ArrayList<>();
-  private static final int SIZE_OF_POPULATION = 150;
-  private static final int NUMBER_OF_GENERATIONS = 5000;
-  private static final int NUMBER_OF_MUTATIONS = 20;
-  private static final int NUMBER_OF_CROSSOVERS = 10;
-  private static final int NUMBER_OF_BEST_CROSSOVERS = 10;
+  private static final int SIZE_OF_POPULATION = 200;
+  private static final int NUMBER_OF_GENERATIONS = 50000;
+  private static final int NUMBER_OF_MUTATIONS = 50;
+  private static final int NUMBER_OF_CROSSOVERS = 30;
+  private static final int NUMBER_OF_BEST_CROSSOVERS = 20;
   private static int maxKilos;
   private static int numberOfEntries;
   private static Random rand = new Random();
