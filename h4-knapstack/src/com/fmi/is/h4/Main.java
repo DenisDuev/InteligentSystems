@@ -8,12 +8,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Main {
+  public static final int STEP_PRINT = 5;
   private static int[] weight;
   private static int[] price;
 
   private static List<Chromosome> population = new ArrayList<>();
-  private static final int SIZE_OF_POPULATION = 50;
-  private static final int NUMBER_OF_GENERATIONS = 500;
+  private static final int SIZE_OF_POPULATION = 150;
+  private static final int NUMBER_OF_GENERATIONS = 5000;
   private static final int NUMBER_OF_MUTATIONS = 20;
   private static final int NUMBER_OF_CROSSOVERS = 10;
   private static final int NUMBER_OF_BEST_CROSSOVERS = 10;
@@ -33,8 +34,10 @@ public class Main {
       crossover();
       mutate();
       fitness();
-      Chromosome max = Collections.max(population, Comparator.comparingInt(Chromosome::getPrice));
-      System.out.println("size " + population.size()+ " " + max);
+      if (i % STEP_PRINT == 0) {
+        Chromosome max = Collections.max(population, Comparator.comparingInt(Chromosome::getPrice));
+        System.out.println(max.getPrice());
+      }
     }
   }
 
