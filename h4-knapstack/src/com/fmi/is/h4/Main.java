@@ -14,11 +14,11 @@ public class Main {
 
   private static List<Chromosome> population = new ArrayList<>();
   private static final int SIZE_OF_POPULATION = 200;
-  private static final int NUMBER_OF_GENERATIONS = 5000;
+  private static int NUMBER_OF_GENERATIONS;
   private static final int NUMBER_OF_MUTATIONS = 50;
   private static final int NUMBER_OF_CROSSOVERS = 30;
   private static final int NUMBER_OF_BEST_CROSSOVERS = 20;
-  private static final int MAX_ITERATION_WITHOUT_CHANGE = NUMBER_OF_GENERATIONS / 10;
+  private static int MAX_ITERATION_WITHOUT_CHANGE;
   private static int maxKilos;
   private static int numberOfEntries;
   private static Random rand = new Random();
@@ -28,6 +28,8 @@ public class Main {
     String[] inputData = reader.readLine().split(" ");
     maxKilos = Integer.parseInt(inputData[0]);
     numberOfEntries = Integer.parseInt(inputData[1]);
+    NUMBER_OF_GENERATIONS = numberOfEntries * 40;
+    MAX_ITERATION_WITHOUT_CHANGE = NUMBER_OF_GENERATIONS / 10;
     fillInitialItems(reader);
     createInitialPopulation(numberOfEntries);
 
