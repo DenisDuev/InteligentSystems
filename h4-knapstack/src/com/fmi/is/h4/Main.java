@@ -14,7 +14,7 @@ public class Main {
 
   private static List<Chromosome> population = new ArrayList<>();
   private static final int SIZE_OF_POPULATION = 200;
-  private static final int NUMBER_OF_GENERATIONS = 50000;
+  private static final int NUMBER_OF_GENERATIONS = 5000;
   private static final int NUMBER_OF_MUTATIONS = 50;
   private static final int NUMBER_OF_CROSSOVERS = 30;
   private static final int NUMBER_OF_BEST_CROSSOVERS = 20;
@@ -89,7 +89,15 @@ public class Main {
       Chromosome otherChromosome = population.get(randomIndex);
       children.add(Chromosome.onePointCrossover(goodChromosome, otherChromosome));
     }
-    population.addAll(children);
+    addNonExisting(children);
+  }
+
+  private static void addNonExisting(List<Chromosome> children) {
+    for (Chromosome chromosome : children) {
+      if (!population.contains(chromosome)) {
+        population.add(chromosome);
+      }
+    }
   }
 
   private static void fitness(){
@@ -114,6 +122,6 @@ public class Main {
       mutationChromosome.mutateItem(randomIndexItem);
       mutatedChromosomes.add(mutationChromosome);
     }
-    population.addAll(mutatedChromosomes);
+    addNonExisting(mutatedChromosomes);
   }
 }
