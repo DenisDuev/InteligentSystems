@@ -18,6 +18,7 @@ public class Main {
   private static final int NUMBER_OF_MUTATIONS = 50;
   private static final int NUMBER_OF_CROSSOVERS = 30;
   private static final int NUMBER_OF_BEST_CROSSOVERS = 20;
+  private static final int MAX_ITERATION_WITHOUT_CHANGE = NUMBER_OF_GENERATIONS / 10;
   private static int maxKilos;
   private static int numberOfEntries;
   private static Random rand = new Random();
@@ -30,14 +31,21 @@ public class Main {
     fillInitialItems(reader);
     createInitialPopulation(numberOfEntries);
 
-    for (int i = 0; i < NUMBER_OF_GENERATIONS; i++) {
+    int maxPrice = 0;
+    int withoutChangeCount = 0;
+    for (int i = 0; i < NUMBER_OF_GENERATIONS && withoutChangeCount < MAX_ITERATION_WITHOUT_CHANGE; i++) {
       crossover();
       mutate();
       fitness();
+      Chromosome max = Collections.max(population, Comparator.comparingInt(Chromosome::getPrice));
       if (i % STEP_PRINT == 0) {
-        Chromosome max = Collections.max(population, Comparator.comparingInt(Chromosome::getPrice));
         System.out.println(max.getPrice());
       }
+      if (maxPrice < max.getPrice()) {
+        maxPrice = max.getPrice();
+        withoutChangeCount = 0;
+      }
+      withoutChangeCount++;
     }
   }
 
