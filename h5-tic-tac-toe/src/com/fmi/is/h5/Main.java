@@ -16,12 +16,31 @@ public class Main {
         while (true) {
             if (START_WITH_PLAYER) {
                 movePlayer();
+                System.out.println(board);
+                if (board.isPlayerWin("X")) {
+                    System.out.println("You win");
+                    break;
+                }
+
                 board.moveAI();
                 System.out.println(board);
+                if (board.isPlayerWin("O")){
+                    System.out.println("You loose");
+                    break;
+                }
             } else {
                 board.moveAI();
                 System.out.println(board);
+                if (board.isPlayerWin("O")){
+                    System.out.println("You loose");
+                    break;
+                }
                 movePlayer();
+                System.out.println(board);
+                if (board.isPlayerWin("X")) {
+                    System.out.println("You win");
+                    break;
+                }
             }
         }
     }

@@ -87,7 +87,7 @@ public class Board {
         return false;
     }
 
-    private boolean isPlayerWin(String player) {
+    public boolean isPlayerWin(String player) {
         boolean isWinning = false;
         for (int row = 0; row < BOARD_SIZE; row++) {
             if (this.board[row][0].equals(player) && this.board[row][1].equals(player) && this.board[row][2].equals(player)) {
@@ -111,6 +111,7 @@ public class Board {
     public void moveAI() {
         stateList.clear();
         minimax(this, 0, false, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        if (stateList.isEmpty()) return;
         BoardState boardState = Collections.min(stateList);
         this.board[boardState.row][boardState.col] = COMPUTER_PLAYER;
 
