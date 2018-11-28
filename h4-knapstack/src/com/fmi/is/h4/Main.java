@@ -16,8 +16,8 @@ public class Main {
   private static int SIZE_OF_POPULATION;
   private static int NUMBER_OF_GENERATIONS;
   private static final int NUMBER_OF_MUTATIONS = 50;
-  private static final int NUMBER_OF_CROSSOVERS = 30;
-  private static final int NUMBER_OF_BEST_CROSSOVERS = 20;
+  private static final int NUMBER_OF_CROSSOVERS = 50;
+  private static final int NUMBER_OF_BEST_CROSSOVERS = 25;
   private static int maxKilos;
   private static int numberOfEntries;
   private static Random rand = new Random();
@@ -29,7 +29,7 @@ public class Main {
     numberOfEntries = Integer.parseInt(inputData[1]);
     NUMBER_OF_GENERATIONS = numberOfEntries * 40;
     SIZE_OF_POPULATION = numberOfEntries;
-    int maxIterationWithoutChange = NUMBER_OF_GENERATIONS / 10;
+    int maxIterationWithoutChange = NUMBER_OF_GENERATIONS / 8;
     fillInitialItems(reader);
     createInitialPopulation(numberOfEntries);
 
