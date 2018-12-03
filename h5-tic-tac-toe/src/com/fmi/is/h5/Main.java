@@ -21,15 +21,20 @@ public class Main {
                     System.out.println("You win");
                     break;
                 }
-
-                board.moveAI();
+                if(!board.moveAI()) {
+                    System.out.println("draw");
+                    break;
+                }
                 System.out.println(board);
                 if (board.isPlayerWin("O")){
                     System.out.println("You loose");
                     break;
                 }
             } else {
-                board.moveAI();
+                if(!board.moveAI()) {
+                    System.out.println("draw");
+                    break;
+                }
                 System.out.println(board);
                 if (board.isPlayerWin("O")){
                     System.out.println("You loose");

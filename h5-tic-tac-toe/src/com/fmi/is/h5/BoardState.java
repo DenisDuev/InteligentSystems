@@ -15,4 +15,13 @@ public class BoardState implements Comparable<BoardState>{
     public int compareTo(BoardState o) {
         return this.value - o.value;
     }
+
+    @Override
+    public String toString() {
+        return "BoardState{" +
+                "row=" + row +
+                ", col=" + col +
+                ", value=" + value +
+                '}';
+    }
 }

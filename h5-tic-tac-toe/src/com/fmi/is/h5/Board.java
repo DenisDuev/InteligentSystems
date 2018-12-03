@@ -67,9 +67,9 @@ public class Board {
 
     public int getScore() {
         if (isPlayerWin(REAL_PLAYER)) {
-            return 1;
+            return 10;
         } else if (isPlayerWin(COMPUTER_PLAYER)) {
-            return -1;
+            return -10;
         }
 
         return 0;
@@ -108,13 +108,13 @@ public class Board {
         return isWinning;
     }
 
-    public void moveAI() {
+    public boolean moveAI() {
         stateList.clear();
         minimax(this, 0, false, Integer.MIN_VALUE, Integer.MAX_VALUE);
-        if (stateList.isEmpty()) return;
+        if (stateList.isEmpty()) return false;
         BoardState boardState = Collections.min(stateList);
         this.board[boardState.row][boardState.col] = COMPUTER_PLAYER;
-
+        return true;
     }
 
     private int minimax(Board boardNode, int depth, boolean isMaximizingPlayer, int alpha, int beta) {
@@ -128,6 +128,7 @@ public class Board {
         }
 
         if (isMaximizingPlayer) {
+            //max
             int bestValue = Integer.MIN_VALUE;
             for (int i = 0; i < BOARD_SIZE; i++) {
                 for (int col = 0; col < BOARD_SIZE; col++) {
@@ -151,6 +152,7 @@ public class Board {
 
             return bestValue;
         } else {
+            //min
             int bestValue = Integer.MAX_VALUE;
             for (int i = 0; i < BOARD_SIZE; i++) {
                 for (int col = 0; col < BOARD_SIZE; col++) {
